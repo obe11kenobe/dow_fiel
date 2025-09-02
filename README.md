@@ -61,23 +61,6 @@ python manage.py runserver
 http://127.0.0.1:8000/
 
 
-
-⸻
-
-📂 Структура проекта
-
-dow_fiel/
-├── dow/               # Корневой модуль проекта
-│   ├── dow/           # Настройки Django
-│   └── main/          # Основное приложение
-│       ├── models.py  # Модель Data
-│       ├── views.py   # Логика отображения (CRUD + auth)
-│       ├── forms.py   # Форма для модели Data
-│       ├── urls.py    # Роутинг приложения
-│       └── templates/ # HTML-шаблоны
-└── manage.py
-
-
 ⸻
 
 🔐 Авторизация
