@@ -1,0 +1,250 @@
+{% extends 'main/base.html' %}
+
+{% block title %}Все записи - DOW System{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h2 class="mb-0">
+                    <i class="fas fa-list me-2"></i>Все записи
+                </h2>
+                <a href="{% url 'data_create' %}" class="btn btn-primary">
+                    <i class="fas fa-plus me-1"></i>Создать запись
+                </a>
+            </div>
+            <div class="card-body">
+                <!-- Search and Filter Section -->
+                <div class="row mb-4">
+                    <div class="col-md-8">
+                        <div class="input-group">
+                            <span class="input-group-text">
+                                <i class="fas fa-search"></i>
+                            </span>
+                            <input type="text" class="form-control" id="searchInput" placeholder="Поиск по номенклатуре, документу или заказу...">
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <select class="form-select" id="sortSelect">
+                            <option value="date">По дате</option>
+                            <option value="nomenclature">По номенклатуре</option>
+                            <option value="document_number">По документу</option>
+                            <option value="cost">По стоимости</option>
+                        </select>
+                    </div>
+                </div>
+
+                {% if transfer %}
+                    <div class="table-responsive">
+                        <table class="table table-hover" id="dataTable">
+                            <thead>
+                                <tr>
+                                    <th><i class="fas fa-hashtag me-1"></i>ID</th>
+                                    <th><i class="fas fa-tag me-1"></i>Номенклатура</th>
+                                    <th><i class="fas fa-file me-1"></i>Документ</th>
+                                    <th><i class="fas fa-calendar me-1"></i>Дата</th>
+                                    <th><i class="fas fa-sort-numeric-up me-1"></i>Старый заказ</th>
+                                    <th><i class="fas fa-sort-numeric-up me-1"></i>Количество</th>
+                                    <th><i class="fas fa-dollar-sign me-1"></i>Стоимость</th>
+                                    <th><i class="fas fa-cogs me-1"></i>Ресурс</th>
+                                    <th><i class="fas fa-sort-numeric-up me-1"></i>Новый заказ</th>
+                                    <th><i class="fas fa-cogs me-1"></i>Действия</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for item in transfer %}
+                                <tr>
+                                    <td>
+                                        <span class="badge bg-secondary">{{ item.id }}</span>
+                                    </td>
+                                    <td>
+                                        <span class="badge bg-primary">{{ item.nomenclature|truncatechars:25 }}</span>
+                                    </td>
+                                    <td>
+                                        <strong>{{ item.document_number }}</strong>
+                                    </td>
+                                    <td>
+                                        <small class="text-muted">{{ item.date|date:"d.m.Y H:i" }}</small>
+                                    </td>
+                                    <td>
+                                        <span class="badge bg-warning text-dark">{{ item.old_order }}</span>
+                                    </td>
+                                    <td>
+                                        <span class="badge bg-info">{{ item.quantity }}</span>
+                                    </td>
+                                    <td>
+                                        <strong class="text-success">{{ item.cost }} ₽</strong>
+                                    </td>
+                                    <td>
+                                        <span class="badge bg-secondary">{{ item.resource }}</span>
+                                    </td>
+                                    <td>
+                                        <span class="badge bg-success">{{ item.new_order }}</span>
+                                    </td>
+                                    <td>
+                                        <div class="btn-group" role="group">
+                                            <a href="{% url 'data_detail' item.pk %}" class="btn btn-sm btn-outline-primary" title="Просмотр">
+                                                <i class="fas fa-eye"></i>
+                                            </a>
+                                            <a href="{% url 'data_update' item.pk %}" class="btn btn-sm btn-outline-warning" title="Редактировать">
+                                                <i class="fas fa-edit"></i>
+                                            </a>
+                                            <a href="{% url 'data_delete' item.pk %}" class="btn btn-sm btn-outline-danger" title="Удалить">
+                                                <i class="fas fa-trash"></i>
+                                            </a>
+                                        </div>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- Pagination -->
+                    {% if transfer.has_other_pages %}
+                    <nav aria-label="Навигация по страницам">
+                        <ul class="pagination justify-content-center">
+                            {% if transfer.has_previous %}
+                                <li class="page-item">
+                                    <a class="page-link" href="?page=1">
+                                        <i class="fas fa-angle-double-left"></i>
+                                    </a>
+                                </li>
+                                <li class="page-item">
+                                    <a class="page-link" href="?page={{ transfer.previous_page_number }}">
+                                        <i class="fas fa-angle-left"></i>
+                                    </a>
+                                </li>
+                            {% endif %}
+
+                            {% for num in transfer.paginator.page_range %}
+                                {% if transfer.number == num %}
+                                    <li class="page-item active">
+                                        <span class="page-link">{{ num }}</span>
+                                    </li>
+                                {% elif num > transfer.number|add:'-3' and num < transfer.number|add:'3' %}
+                                    <li class="page-item">
+                                        <a class="page-link" href="?page={{ num }}">{{ num }}</a>
+                                    </li>
+                                {% endif %}
+                            {% endfor %}
+
+                            {% if transfer.has_next %}
+                                <li class="page-item">
+                                    <a class="page-link" href="?page={{ transfer.next_page_number }}">
+                                        <i class="fas fa-angle-right"></i>
+                                    </a>
+                                </li>
+                                <li class="page-item">
+                                    <a class="page-link" href="?page={{ transfer.paginator.num_pages }}">
+                                        <i class="fas fa-angle-double-right"></i>
+                                    </a>
+                                </li>
+                            {% endif %}
+                        </ul>
+                    </nav>
+                    {% endif %}
+
+                    <!-- Page Info -->
+                    <div class="text-center text-muted mt-3">
+                        <small>
+                            Показано {{ transfer.start_index }} - {{ transfer.end_index }} из {{ transfer.paginator.count }} записей
+                        </small>
+                    </div>
+
+                {% else %}
+                    <div class="text-center py-5">
+                        <i class="fas fa-inbox fa-4x text-muted mb-4"></i>
+                        <h4 class="text-muted">Записей пока нет</h4>
+                        <p class="text-muted">Создайте первую запись для начала работы с системой</p>
+                        <a href="{% url 'data_create' %}" class="btn btn-primary btn-lg">
+                            <i class="fas fa-plus me-2"></i>Создать запись
+                        </a>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Export Section -->
+<div class="row mt-4">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header">
+                <h4 class="mb-0">
+                    <i class="fas fa-download me-2"></i>Экспорт данных
+                </h4>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-3 mb-2">
+                        <button class="btn btn-outline-success w-100" onclick="exportToCSV()">
+                            <i class="fas fa-file-csv me-1"></i>CSV
+                        </button>
+                    </div>
+                    <div class="col-md-3 mb-2">
+                        <button class="btn btn-outline-danger w-100" onclick="exportToPDF()">
+                            <i class="fas fa-file-pdf me-1"></i>PDF
+                        </button>
+                    </div>
+                    <div class="col-md-3 mb-2">
+                        <button class="btn btn-outline-primary w-100" onclick="exportToExcel()">
+                            <i class="fas fa-file-excel me-1"></i>Excel
+                        </button>
+                    </div>
+                    <div class="col-md-3 mb-2">
+                        <button class="btn btn-outline-secondary w-100" onclick="printTable()">
+                            <i class="fas fa-print me-1"></i>Печать
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+// Search functionality
+document.getElementById('searchInput').addEventListener('keyup', function() {
+    const searchTerm = this.value.toLowerCase();
+    const table = document.getElementById('dataTable');
+    const rows = table.getElementsByTagName('tbody')[0].getElementsByTagName('tr');
+    
+    for (let row of rows) {
+        const text = row.textContent.toLowerCase();
+        if (text.includes(searchTerm)) {
+            row.style.display = '';
+        } else {
+            row.style.display = 'none';
+        }
+    }
+});
+
+// Sort functionality
+document.getElementById('sortSelect').addEventListener('change', function() {
+    // This would need backend implementation for proper sorting
+    console.log('Sort by:', this.value);
+});
+
+// Export functions
+function exportToCSV() {
+    alert('Функция экспорта в CSV будет реализована');
+}
+
+function exportToPDF() {
+    alert('Функция экспорта в PDF будет реализована');
+}
+
+function exportToExcel() {
+    alert('Функция экспорта в Excel будет реализована');
+}
+
+function printTable() {
+    window.print();
+}
+</script>
+{% endblock %}

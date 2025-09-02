@@ -1,0 +1,158 @@
+{% extends 'main/base.html' %}
+
+{% block title %}Главная - DOW System{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header">
+                <h2 class="mb-0">
+                    <i class="fas fa-tachometer-alt me-2"></i>Панель управления
+                </h2>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-6 col-lg-3 mb-4">
+                        <div class="card bg-primary text-white text-center">
+                            <div class="card-body">
+                                <i class="fas fa-database fa-3x mb-3"></i>
+                                <h4 class="card-title">{{ total }}</h4>
+                                <p class="card-text">Всего записей</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6 col-lg-3 mb-4">
+                        <div class="card bg-success text-white text-center">
+                            <div class="card-body">
+                                <i class="fas fa-file-alt fa-3x mb-3"></i>
+                                <h4 class="card-title">{{ transfer.count }}</h4>
+                                <p class="card-text">Последние записи</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6 col-lg-3 mb-4">
+                        <div class="card bg-info text-white text-center">
+                            <div class="card-body">
+                                <i class="fas fa-clock fa-3x mb-3"></i>
+                                <h4 class="card-title">Сегодня</h4>
+                                <p class="card-text">Активные заказы</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6 col-lg-3 mb-4">
+                        <div class="card bg-warning text-white text-center">
+                            <div class="card-body">
+                                <i class="fas fa-chart-line fa-3x mb-3"></i>
+                                <h4 class="card-title">Аналитика</h4>
+                                <p class="card-text">Отчеты</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row mt-4">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h3 class="mb-0">
+                    <i class="fas fa-list me-2"></i>Последние записи
+                </h3>
+                <a href="{% url 'data_list' %}" class="btn btn-outline-light">
+                    <i class="fas fa-eye me-1"></i>Посмотреть все
+                </a>
+            </div>
+            <div class="card-body">
+                {% if transfer %}
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th><i class="fas fa-hashtag me-1"></i>ID</th>
+                                    <th><i class="fas fa-tag me-1"></i>Номенклатура</th>
+                                    <th><i class="fas fa-file me-1"></i>Документ</th>
+                                    <th><i class="fas fa-calendar me-1"></i>Дата</th>
+                                    <th><i class="fas fa-sort-numeric-up me-1"></i>Количество</th>
+                                    <th><i class="fas fa-dollar-sign me-1"></i>Стоимость</th>
+                                    <th><i class="fas fa-cogs me-1"></i>Действия</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for item in transfer %}
+                                <tr>
+                                    <td>{{ item.id }}</td>
+                                    <td>
+                                        <span class="badge bg-primary">{{ item.nomenclature|truncatechars:30 }}</span>
+                                    </td>
+                                    <td>{{ item.document_number }}</td>
+                                    <td>{{ item.date|date:"d.m.Y H:i" }}</td>
+                                    <td>{{ item.quantity }}</td>
+                                    <td>{{ item.cost }} ₽</td>
+                                    <td>
+                                        <div class="btn-group" role="group">
+                                            <a href="{% url 'data_detail' item.pk %}" class="btn btn-sm btn-outline-primary">
+                                                <i class="fas fa-eye"></i>
+                                            </a>
+                                            <a href="{% url 'data_update' item.pk %}" class="btn btn-sm btn-outline-warning">
+                                                <i class="fas fa-edit"></i>
+                                            </a>
+                                            <a href="{% url 'data_delete' item.pk %}" class="btn btn-sm btn-outline-danger">
+                                                <i class="fas fa-trash"></i>
+                                            </a>
+                                        </div>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                {% else %}
+                    <div class="text-center py-4">
+                        <i class="fas fa-inbox fa-3x text-muted mb-3"></i>
+                        <h5 class="text-muted">Записей пока нет</h5>
+                        <p class="text-muted">Создайте первую запись для начала работы</p>
+                        <a href="{% url 'data_create' %}" class="btn btn-primary">
+                            <i class="fas fa-plus me-1"></i>Создать запись
+                        </a>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row mt-4">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header">
+                <h3 class="mb-0">
+                    <i class="fas fa-rocket me-2"></i>Быстрые действия
+                </h3>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-4 mb-3">
+                        <a href="{% url 'data_create' %}" class="btn btn-primary btn-lg w-100">
+                            <i class="fas fa-plus me-2"></i>Создать запись
+                        </a>
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <a href="{% url 'data_list' %}" class="btn btn-outline-primary btn-lg w-100">
+                            <i class="fas fa-list me-2"></i>Просмотр всех
+                        </a>
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <button class="btn btn-outline-info btn-lg w-100" onclick="location.reload()">
+                            <i class="fas fa-sync-alt me-2"></i>Обновить
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

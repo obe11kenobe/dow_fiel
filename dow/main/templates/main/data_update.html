@@ -1,0 +1,323 @@
+{% extends 'main/base.html' %}
+
+{% block title %}Редактировать запись - DOW System{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-lg-8">
+        <div class="card">
+            <div class="card-header">
+                <h2 class="mb-0">
+                    <i class="fas fa-edit me-2"></i>Редактировать запись #{{ transfer.id }}
+                </h2>
+            </div>
+            <div class="card-body">
+                <form method="post" class="needs-validation" novalidate>
+                    {% csrf_token %}
+                    
+                    <div class="row">
+                        <!-- Основная информация -->
+                        <div class="col-md-6 mb-3">
+                            <label for="{{ form.nomenclature.id_for_label }}" class="form-label">
+                                <i class="fas fa-tag me-1"></i>Номенклатура <span class="text-danger">*</span>
+                            </label>
+                            {{ form.nomenclature }}
+                            {% if form.nomenclature.errors %}
+                                <div class="invalid-feedback d-block">
+                                    {% for error in form.nomenclature.errors %}
+                                        {{ error }}
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+                            <div class="form-text">Введите название номенклатуры</div>
+                        </div>
+                        
+                        <div class="col-md-6 mb-3">
+                            <label for="{{ form.document_number.id_for_label }}" class="form-label">
+                                <i class="fas fa-file me-1"></i>Номер документа <span class="text-danger">*</span>
+                            </label>
+                            {{ form.document_number }}
+                            {% if form.document_number.errors %}
+                                <div class="invalid-feedback d-block">
+                                    {% for error in form.document_number.errors %}
+                                        {{ error }}
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+                            <div class="form-text">Введите номер документа</div>
+                        </div>
+                    </div>
+                    
+                    <div class="row">
+                        <!-- Заказы -->
+                        <div class="col-md-6 mb-3">
+                            <label for="{{ form.old_order.id_for_label }}" class="form-label">
+                                <i class="fas fa-sort-numeric-up me-1"></i>Старый заказ <span class="text-danger">*</span>
+                            </label>
+                            {{ form.old_order }}
+                            {% if form.old_order.errors %}
+                                <div class="invalid-feedback d-block">
+                                    {% for error in form.old_order.errors %}
+                                        {{ error }}
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+                            <div class="form-text">Введите номер старого заказа</div>
+                        </div>
+                        
+                        <div class="col-md-6 mb-3">
+                            <label for="{{ form.new_order.id_for_label }}" class="form-label">
+                                <i class="fas fa-sort-numeric-up me-1"></i>Новый заказ <span class="text-danger">*</span>
+                            </label>
+                            {{ form.new_order }}
+                            {% if form.new_order.errors %}
+                                <div class="invalid-feedback d-block">
+                                    {% for error in form.new_order.errors %}
+                                        {{ error }}
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+                            <div class="form-text">Введите номер нового заказа</div>
+                        </div>
+                    </div>
+                    
+                    <div class="row">
+                        <!-- Количественные показатели -->
+                        <div class="col-md-6 mb-3">
+                            <label for="{{ form.quantity.id_for_label }}" class="form-label">
+                                <i class="fas fa-calculator me-1"></i>Количество <span class="text-danger">*</span>
+                            </label>
+                            {{ form.quantity }}
+                            {% if form.quantity.errors %}
+                                <div class="invalid-feedback d-block">
+                                    {% for error in form.quantity.errors %}
+                                        {{ error }}
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+                            <div class="form-text">Введите количество</div>
+                        </div>
+                        
+                        <div class="col-md-6 mb-3">
+                            <label for="{{ form.cost.id_for_label }}" class="form-label">
+                                <i class="fas fa-dollar-sign me-1"></i>Стоимость <span class="text-danger">*</span>
+                            </label>
+                            <div class="input-group">
+                                {{ form.cost }}
+                                <span class="input-group-text">₽</span>
+                            </div>
+                            {% if form.cost.errors %}
+                                <div class="invalid-feedback d-block">
+                                    {% for error in form.cost.errors %}
+                                        {{ error }}
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+                            <div class="form-text">Введите стоимость в рублях</div>
+                        </div>
+                    </div>
+                    
+                    <div class="row">
+                        <!-- Ресурс -->
+                        <div class="col-md-6 mb-3">
+                            <label for="{{ form.resource.id_for_label }}" class="form-label">
+                                <i class="fas fa-cogs me-1"></i>Ресурс <span class="text-danger">*</span>
+                            </label>
+                            {{ form.resource }}
+                            {% if form.resource.errors %}
+                                <div class="invalid-feedback d-block">
+                                    {% for error in form.resource.errors %}
+                                        {{ error }}
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+                            <div class="form-text">Введите название ресурса</div>
+                        </div>
+                        
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">
+                                <i class="fas fa-calendar me-1"></i>Дата создания
+                            </label>
+                            <input type="text" class="form-control" value="{{ transfer.date|date:'d.m.Y H:i:s' }}" readonly>
+                            <div class="form-text">Дата создания записи</div>
+                        </div>
+                    </div>
+                    
+                    <!-- Кнопки действий -->
+                    <div class="row mt-4">
+                        <div class="col-12">
+                            <div class="d-flex justify-content-between">
+                                <a href="{% url 'data_detail' transfer.pk %}" class="btn btn-outline-secondary">
+                                    <i class="fas fa-arrow-left me-1"></i>Отмена
+                                </a>
+                                <div>
+                                    <button type="reset" class="btn btn-outline-warning me-2">
+                                        <i class="fas fa-undo me-1"></i>Сбросить изменения
+                                    </button>
+                                    <button type="submit" class="btn btn-warning">
+                                        <i class="fas fa-save me-1"></i>Сохранить изменения
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+        
+        <!-- Информация о записи -->
+        <div class="card mt-4">
+            <div class="card-header bg-info text-white">
+                <h5 class="mb-0">
+                    <i class="fas fa-info-circle me-2"></i>Информация о записи
+                </h5>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <h6><i class="fas fa-calendar text-primary me-1"></i>Дата создания:</h6>
+                        <p class="text-muted">{{ transfer.date|date:"d.m.Y H:i:s" }}</p>
+                        
+                        <h6><i class="fas fa-clock text-success me-1"></i>Последнее изменение:</h6>
+                        <p class="text-muted">Сейчас</p>
+                    </div>
+                    <div class="col-md-6">
+                        <h6><i class="fas fa-user text-warning me-1"></i>Создатель:</h6>
+                        <p class="text-muted">Система</p>
+                        
+                        <h6><i class="fas fa-edit text-info me-1"></i>Статус:</h6>
+                        <p class="text-muted">Редактируется</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Быстрые действия -->
+        <div class="card mt-4">
+            <div class="card-header bg-warning text-dark">
+                <h5 class="mb-0">
+                    <i class="fas fa-bolt me-2"></i>Быстрые действия
+                </h5>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-4 mb-2">
+                        <a href="{% url 'data_detail' transfer.pk %}" class="btn btn-outline-primary w-100">
+                            <i class="fas fa-eye me-1"></i>Просмотр
+                        </a>
+                    </div>
+                    <div class="col-md-4 mb-2">
+                        <a href="{% url 'data_delete' transfer.pk %}" class="btn btn-outline-danger w-100">
+                            <i class="fas fa-trash me-1"></i>Удалить
+                        </a>
+                    </div>
+                    <div class="col-md-4 mb-2">
+                        <a href="{% url 'data_list' %}" class="btn btn-outline-secondary w-100">
+                            <i class="fas fa-list me-1"></i>К списку
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_css %}
+<style>
+    .form-control, .form-select {
+        border-radius: 0.5rem;
+        border: 1px solid #ced4da;
+        transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+    }
+    
+    .form-control:focus, .form-select:focus {
+        border-color: #667eea;
+        box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
+    }
+    
+    .form-label {
+        font-weight: 600;
+        color: #495057;
+    }
+    
+    .form-text {
+        font-size: 0.875rem;
+        color: #6c757d;
+    }
+    
+    .btn {
+        border-radius: 0.5rem;
+        font-weight: 500;
+    }
+    
+    .card {
+        border-radius: 0.75rem;
+        box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+    }
+</style>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+// Bootstrap form validation
+(function() {
+    'use strict';
+    window.addEventListener('load', function() {
+        var forms = document.getElementsByClassName('needs-validation');
+        var validation = Array.prototype.filter.call(forms, function(form) {
+            form.addEventListener('submit', function(event) {
+                if (form.checkValidity() === false) {
+                    event.preventDefault();
+                    event.stopPropagation();
+                }
+                form.classList.add('was-validated');
+            }, false);
+        });
+    }, false);
+})();
+
+// Auto-format number inputs
+document.addEventListener('DOMContentLoaded', function() {
+    const quantityInput = document.getElementById('{{ form.quantity.id_for_label }}');
+    const costInput = document.getElementById('{{ form.cost.id_for_label }}');
+    
+    if (quantityInput) {
+        quantityInput.addEventListener('input', function() {
+            this.value = this.value.replace(/[^0-9.]/g, '');
+        });
+    }
+    
+    if (costInput) {
+        costInput.addEventListener('input', function() {
+            this.value = this.value.replace(/[^0-9.]/g, '');
+        });
+    }
+});
+
+// Confirm before leaving with unsaved changes
+window.addEventListener('beforeunload', function(e) {
+    const form = document.querySelector('form');
+    if (form && form.dataset.changed === 'true') {
+        e.preventDefault();
+        e.returnValue = '';
+    }
+});
+
+// Track form changes
+document.addEventListener('DOMContentLoaded', function() {
+    const form = document.querySelector('form');
+    const inputs = form.querySelectorAll('input, select, textarea');
+    
+    inputs.forEach(input => {
+        input.addEventListener('change', function() {
+            form.dataset.changed = 'true';
+        });
+    });
+    
+    form.addEventListener('submit', function() {
+        form.dataset.changed = 'false';
+    });
+});
+</script>
+{% endblock %}

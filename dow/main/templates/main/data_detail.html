@@ -1,0 +1,234 @@
+{% extends 'main/base.html' %}
+
+{% block title %}Детали записи - DOW System{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h2 class="mb-0">
+                    <i class="fas fa-eye me-2"></i>Детали записи #{{ transfer.id }}
+                </h2>
+                <div>
+                    <a href="{% url 'data_update' transfer.pk %}" class="btn btn-warning me-2">
+                        <i class="fas fa-edit me-1"></i>Редактировать
+                    </a>
+                    <a href="{% url 'data_list' %}" class="btn btn-outline-secondary">
+                        <i class="fas fa-arrow-left me-1"></i>Назад к списку
+                    </a>
+                </div>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <!-- Main Information -->
+                    <div class="col-md-8">
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <div class="card h-100">
+                                    <div class="card-header bg-primary text-white">
+                                        <h6 class="mb-0">
+                                            <i class="fas fa-tag me-1"></i>Основная информация
+                                        </h6>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="mb-3">
+                                            <label class="form-label fw-bold">Номенклатура:</label>
+                                            <p class="form-control-plaintext">{{ transfer.nomenclature }}</p>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label class="form-label fw-bold">Номер документа:</label>
+                                            <p class="form-control-plaintext">{{ transfer.document_number }}</p>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label class="form-label fw-bold">Дата создания:</label>
+                                            <p class="form-control-plaintext">{{ transfer.date|date:"d.m.Y H:i:s" }}</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="col-md-6 mb-3">
+                                <div class="card h-100">
+                                    <div class="card-header bg-success text-white">
+                                        <h6 class="mb-0">
+                                            <i class="fas fa-sort-numeric-up me-1"></i>Заказы
+                                        </h6>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="mb-3">
+                                            <label class="form-label fw-bold">Старый заказ:</label>
+                                            <p class="form-control-plaintext">
+                                                <span class="badge bg-warning text-dark">{{ transfer.old_order }}</span>
+                                            </p>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label class="form-label fw-bold">Новый заказ:</label>
+                                            <p class="form-control-plaintext">
+                                                <span class="badge bg-success">{{ transfer.new_order }}</span>
+                                            </p>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label class="form-label fw-bold">Ресурс:</label>
+                                            <p class="form-control-plaintext">
+                                                <span class="badge bg-secondary">{{ transfer.resource }}</span>
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <div class="card h-100">
+                                    <div class="card-header bg-info text-white">
+                                        <h6 class="mb-0">
+                                            <i class="fas fa-calculator me-1"></i>Количественные показатели
+                                        </h6>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="mb-3">
+                                            <label class="form-label fw-bold">Количество:</label>
+                                            <p class="form-control-plaintext">
+                                                <span class="badge bg-info fs-6">{{ transfer.quantity }}</span>
+                                            </p>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label class="form-label fw-bold">Стоимость:</label>
+                                            <p class="form-control-plaintext">
+                                                <span class="badge bg-success fs-6">{{ transfer.cost }} ₽</span>
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="col-md-6 mb-3">
+                                <div class="card h-100">
+                                    <div class="card-header bg-warning text-dark">
+                                        <h6 class="mb-0">
+                                            <i class="fas fa-info-circle me-1"></i>Дополнительно
+                                        </h6>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="mb-3">
+                                            <label class="form-label fw-bold">ID записи:</label>
+                                            <p class="form-control-plaintext">
+                                                <span class="badge bg-secondary">{{ transfer.id }}</span>
+                                            </p>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label class="form-label fw-bold">Статус:</label>
+                                            <p class="form-control-plaintext">
+                                                <span class="badge bg-success">Активна</span>
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Sidebar -->
+                    <div class="col-md-4">
+                        <div class="card">
+                            <div class="card-header bg-dark text-white">
+                                <h6 class="mb-0">
+                                    <i class="fas fa-cogs me-1"></i>Действия
+                                </h6>
+                            </div>
+                            <div class="card-body">
+                                <div class="d-grid gap-2">
+                                    <a href="{% url 'data_update' transfer.pk %}" class="btn btn-warning">
+                                        <i class="fas fa-edit me-1"></i>Редактировать
+                                    </a>
+                                    <a href="{% url 'data_delete' transfer.pk %}" class="btn btn-danger">
+                                        <i class="fas fa-trash me-1"></i>Удалить
+                                    </a>
+                                    <a href="{% url 'data_list' %}" class="btn btn-outline-secondary">
+                                        <i class="fas fa-list me-1"></i>К списку
+                                    </a>
+                                    <button class="btn btn-outline-info" onclick="window.print()">
+                                        <i class="fas fa-print me-1"></i>Печать
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Quick Stats -->
+                        <div class="card mt-3">
+                            <div class="card-header bg-primary text-white">
+                                <h6 class="mb-0">
+                                    <i class="fas fa-chart-bar me-1"></i>Статистика
+                                </h6>
+                            </div>
+                            <div class="card-body">
+                                <div class="row text-center">
+                                    <div class="col-6">
+                                        <div class="border-end">
+                                            <h5 class="text-primary mb-0">{{ transfer.quantity }}</h5>
+                                            <small class="text-muted">Количество</small>
+                                        </div>
+                                    </div>
+                                    <div class="col-6">
+                                        <h5 class="text-success mb-0">{{ transfer.cost }} ₽</h5>
+                                        <small class="text-muted">Стоимость</small>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Related Records Section -->
+<div class="row mt-4">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header">
+                <h4 class="mb-0">
+                    <i class="fas fa-link me-2"></i>Связанные записи
+                </h4>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-4 mb-3">
+                        <div class="card border-primary">
+                            <div class="card-body text-center">
+                                <i class="fas fa-file-alt fa-2x text-primary mb-2"></i>
+                                <h6>По документу</h6>
+                                <p class="text-muted">{{ transfer.document_number }}</p>
+                                <button class="btn btn-sm btn-outline-primary">Найти похожие</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <div class="card border-success">
+                            <div class="card-body text-center">
+                                <i class="fas fa-tag fa-2x text-success mb-2"></i>
+                                <h6>По номенклатуре</h6>
+                                <p class="text-muted">{{ transfer.nomenclature|truncatechars:20 }}</p>
+                                <button class="btn btn-sm btn-outline-success">Найти похожие</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <div class="card border-warning">
+                            <div class="card-body text-center">
+                                <i class="fas fa-sort-numeric-up fa-2x text-warning mb-2"></i>
+                                <h6>По заказу</h6>
+                                <p class="text-muted">{{ transfer.old_order }}</p>
+                                <button class="btn btn-sm btn-outline-warning">Найти похожие</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
